@@ -8,6 +8,7 @@ namespace RulesService.Application
         public static IServiceCollection AddApplication(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<ITenantService, TenantService>();
+            serviceCollection.AddScoped<IConditionTypeService, ConditionTypeService>();
 
             return serviceCollection;
         }

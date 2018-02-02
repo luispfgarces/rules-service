@@ -2,8 +2,9 @@
 
 namespace RulesService.Domain.Core
 {
-    public class EntityBase<TKey>
+    public abstract class EntityBase<TConcrete, TKey>
         where TKey : new()
+        where TConcrete : EntityBase<TConcrete, TKey>
     {
         protected EntityBase()
         {
@@ -14,6 +15,8 @@ namespace RulesService.Domain.Core
 
         public AuditMetadata AuditMetadata { get; private set; }
 
-        public TKey Id { get; set; }
+        public abstract bool EqualsIdentity(TConcrete other);
+
+        public abstract bool EqualsIdentity(TKey key);
     }
 }

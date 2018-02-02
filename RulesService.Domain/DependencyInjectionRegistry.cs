@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RulesService.Domain.Models.Factories;
 
 namespace RulesService.Domain
 {
@@ -6,7 +7,8 @@ namespace RulesService.Domain
     {
         public static IServiceCollection AddDomain(this IServiceCollection serviceCollection)
         {
-            // serviceCollection.AddSingleton<ITenantRepository, MockTenantRepository>();
+            serviceCollection.AddTransient<ITenantFactory, TenantFactory>();
+            serviceCollection.AddTransient<IConditionTypeFactory, ConditionTypeFactory>();
 
             return serviceCollection;
         }

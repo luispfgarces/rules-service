@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using RulesService.Domain.Core;
 
 namespace RulesService.Domain.Model
 {
-    public class Tenant : EntityBase<Guid>
+    public class Tenant : EntityBase<Tenant, Guid>
     {
         public Tenant()
             : base()
@@ -13,6 +11,20 @@ namespace RulesService.Domain.Model
             this.Id = Guid.NewGuid();
         }
 
+        public Guid Id { get; set; }
+
         public string Name { get; set; }
+
+        public override bool EqualsIdentity(Tenant other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return this.EqualsIdentity(other.Id);
+        }
+
+        public override bool EqualsIdentity(Guid key) => this.Id == key;
     }
 }

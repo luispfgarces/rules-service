@@ -8,6 +8,7 @@ namespace RulesService.Data.InMemoryRepositories
         public static IServiceCollection AddInMemoryRepositories(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<ITenantRepository, TenantInMemoryRepository>();
+            serviceCollection.AddSingleton<IConditionTypeRepository, ConditionTypeInMemoryRepository>();
 
             return serviceCollection;
         }

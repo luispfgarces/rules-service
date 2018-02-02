@@ -5,17 +5,23 @@ using System.Threading.Tasks;
 using RulesService.Application.Dto;
 using RulesService.Application.Exceptions;
 using RulesService.Domain.Model;
+using RulesService.Domain.Models.Factories;
 using RulesService.Domain.Repositories;
 
 namespace RulesService.Application.Services
 {
     internal class TenantService : ITenantService
     {
+        private readonly ITenantFactory tenantFactory;
+
         private readonly ITenantRepository tenantRepository;
 
-        public TenantService(ITenantRepository tenantRepository)
+        public TenantService(
+            ITenantRepository tenantRepository,
+            ITenantFactory tenantFactory)
         {
             this.tenantRepository = tenantRepository;
+            this.tenantFactory = tenantFactory;
         }
 
         public async Task<TenantDto> Add(TenantDto tenantDto)
@@ -25,10 +31,7 @@ namespace RulesService.Application.Services
                 throw new ArgumentNullException(nameof(tenantDto));
             }
 
-            Tenant tenant = new Tenant
-            {
-                Name = tenantDto.Name
-            };
+            Tenant tenant = this.tenantFactory.CreateTenant(tenantDto.Name);
 
             await this.tenantRepository.Add(tenant);
 

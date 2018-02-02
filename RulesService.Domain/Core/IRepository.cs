@@ -5,7 +5,7 @@ namespace RulesService.Domain.Core
 {
     public interface IRepository<TEntity, TKey>
         where TKey : new()
-        where TEntity : EntityBase<TKey>
+        where TEntity : EntityBase<TEntity, TKey>
     {
         Task Add(TEntity entity);
 
