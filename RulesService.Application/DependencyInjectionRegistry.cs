@@ -9,6 +9,7 @@ namespace RulesService.Application
         {
             serviceCollection.AddScoped<ITenantService, TenantService>();
             serviceCollection.AddScoped<IConditionTypeService, ConditionTypeService>();
+            serviceCollection.AddScoped<IDataTypeService, DataTypeService>();
 
             return serviceCollection;
         }
