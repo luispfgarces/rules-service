@@ -9,6 +9,7 @@ namespace RulesService.Domain
         {
             serviceCollection.AddTransient<ITenantFactory, TenantFactory>();
             serviceCollection.AddTransient<IConditionTypeFactory, ConditionTypeFactory>();
+            serviceCollection.AddTransient<IContentTypeFactory, ContentTypeFactory>();
 
             return serviceCollection;
         }

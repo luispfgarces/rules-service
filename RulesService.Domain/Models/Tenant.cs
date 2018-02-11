@@ -1,7 +1,7 @@
 ﻿using System;
 using RulesService.Domain.Core;
 
-namespace RulesService.Domain.Model
+namespace RulesService.Domain.Models
 {
     public class Tenant : EntityBase<Tenant, Guid>
     {

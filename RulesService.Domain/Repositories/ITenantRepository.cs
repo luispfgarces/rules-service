@@ -1,6 +1,6 @@
 ﻿using System;
 using RulesService.Domain.Core;
-using RulesService.Domain.Model;
+using RulesService.Domain.Models;
 
 namespace RulesService.Domain.Repositories
 {

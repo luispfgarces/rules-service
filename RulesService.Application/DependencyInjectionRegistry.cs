@@ -10,6 +10,7 @@ namespace RulesService.Application
             serviceCollection.AddScoped<ITenantService, TenantService>();
             serviceCollection.AddScoped<IConditionTypeService, ConditionTypeService>();
             serviceCollection.AddScoped<IDataTypeService, DataTypeService>();
+            serviceCollection.AddScoped<IContentTypeService, ContentTypeService>();
 
             return serviceCollection;
         }

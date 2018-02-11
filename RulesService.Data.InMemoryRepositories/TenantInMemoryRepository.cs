@@ -1,5 +1,5 @@
 ﻿using System;
-using RulesService.Domain.Model;
+using RulesService.Domain.Models;
 using RulesService.Domain.Repositories;
 
 namespace RulesService.Data.InMemoryRepositories

@@ -1,15 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using RulesService.Domain.Core;
 
-namespace RulesService.Domain.Model
+namespace RulesService.Domain.Models
 {
-    public class ContentType
+    public class ContentType : EntityBase<ContentType, ContentTypeKey>
     {
-        public Guid Id { get; set; }
+        public ContentType(Guid tenantId, int code, string name)
+        {
+            this.Key = new ContentTypeKey
+            {
+                Code = code,
+                TenantId = tenantId
+            };
+            this.Name = name;
+        }
+
+        public ContentTypeKey Key { get; private set; }
 
         public string Name { get; set; }
 
-        public Tenant Tenant { get; set; }
+        public override bool EqualsIdentity(ContentType other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return this.EqualsIdentity(other.Key);
+        }
+
+        public override bool EqualsIdentity(ContentTypeKey key) => this.Key == key;
     }
 }

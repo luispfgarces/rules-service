@@ -23,11 +23,11 @@ namespace RulesService.Presentation.Api.Controllers.V1
         [ProducesResponseType(400)]
         public async Task<IActionResult> Add([FromRoute] Guid tenantId, [FromBody] CreateConditionTypeDto conditionTypeDto)
         {
-            ConditionTypeDto updatedConditionTypeDto = await this.conditionTypeService.Add(conditionTypeDto.ToConditionTypeDto(tenantId));
+            ConditionTypeDto addedConditionTypeDto = await this.conditionTypeService.Add(conditionTypeDto.ToConditionTypeDto(tenantId));
 
-            if (updatedConditionTypeDto.Code != default(int))
+            if (addedConditionTypeDto.Code != default(int))
             {
-                return this.CreatedAtRoute("get-condition-type", new { code = updatedConditionTypeDto.Code }, updatedConditionTypeDto);
+                return this.CreatedAtRoute("get-condition-type", new { code = addedConditionTypeDto.Code }, addedConditionTypeDto);
             }
 
             return this.BadRequest();

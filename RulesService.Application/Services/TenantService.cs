@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using RulesService.Application.Dto;
 using RulesService.Application.Exceptions;
-using RulesService.Domain.Model;
+using RulesService.Domain.Models;
 using RulesService.Domain.Models.Factories;
 using RulesService.Domain.Repositories;
 
