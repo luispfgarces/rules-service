@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RulesService.Application.Dto;
+using RulesService.Application.Dto.Tenants;
 
 namespace RulesService.Application.Services
 {

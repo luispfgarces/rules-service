@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using RulesService.Application.Dto;
+using RulesService.Application.Dto.Tenants;
 using RulesService.Application.Exceptions;
 using RulesService.Domain.Models;
 using RulesService.Domain.Models.Factories;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RulesService.Application.Dto;
+using RulesService.Application.Dto.Tenants;
 using RulesService.Application.Exceptions;
 using RulesService.Application.Services;
 
@@ -21,13 +21,13 @@ namespace RulesService.Presentation.Api.Controllers.V1
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(TenantDto))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Add([FromBody] TenantDto tenantDto)
+        public async Task<IActionResult> Add([FromBody] CreateTenantDto createTenantDto)
         {
-            TenantDto updatedTenantDto = await this.tenantService.Add(tenantDto);
+            TenantDto createdTenantDto = await this.tenantService.Add(createTenantDto.ToTenantDto());
 
-            if (updatedTenantDto.Id != Guid.Empty)
+            if (createdTenantDto.Id != Guid.Empty)
             {
-                return this.CreatedAtRoute("get-tenant", new { id = updatedTenantDto.Id }, updatedTenantDto);
+                return this.CreatedAtRoute("get-tenant", new { id = createdTenantDto.Id }, createdTenantDto);
             }
 
             return this.BadRequest();
@@ -77,17 +77,11 @@ namespace RulesService.Presentation.Api.Controllers.V1
         [HttpPut, Route("{id}", Name = "update-tenant")]
         [ProducesResponseType(200, Type = typeof(TenantDto))]
         [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> Update(Guid id, [FromBody] TenantDto tenantDto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTenantDto updateTenantDto)
         {
-            if (tenantDto.Id != id)
-            {
-                return this.BadRequest("Specified route tenant id and body tenant id aren't the same.");
-            }
-
             try
             {
-                TenantDto updatedTenantDto = await this.tenantService.Update(tenantDto);
+                TenantDto updatedTenantDto = await this.tenantService.Update(updateTenantDto.ToTenantDto(id));
 
                 return this.Ok(updatedTenantDto);
             }
