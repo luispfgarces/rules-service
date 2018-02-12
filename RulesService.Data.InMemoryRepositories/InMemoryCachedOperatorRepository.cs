@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using RulesService.Domain.Models;
 using RulesService.Domain.Models.Factories;
 using RulesService.Domain.Models.Operators;
+using RulesService.Domain.Repositories;
 
-namespace RulesService.Domain.Repositories
+namespace RulesService.Data.InMemoryRepositories
 {
     internal class InMemoryCachedOperatorRepository : IOperatorRepository
     {

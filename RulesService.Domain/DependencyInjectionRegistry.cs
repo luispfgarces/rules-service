@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RulesService.Domain.Models.Factories;
-using RulesService.Domain.Repositories;
 
 namespace RulesService.Domain
 {
@@ -12,7 +11,6 @@ namespace RulesService.Domain
             serviceCollection.AddTransient<IConditionTypeFactory, ConditionTypeFactory>();
             serviceCollection.AddTransient<IContentTypeFactory, ContentTypeFactory>();
             serviceCollection.AddTransient<IOperatorFactory, OperatorFactory>();
-            serviceCollection.AddSingleton<IOperatorRepository, InMemoryCachedOperatorRepository>();
 
             return serviceCollection;
         }
