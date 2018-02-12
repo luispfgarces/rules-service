@@ -11,6 +11,7 @@ namespace RulesService.Application
             serviceCollection.AddScoped<IConditionTypeService, ConditionTypeService>();
             serviceCollection.AddScoped<IDataTypeService, DataTypeService>();
             serviceCollection.AddScoped<IContentTypeService, ContentTypeService>();
+            serviceCollection.AddScoped<IOperatorService, OperatorService>();
 
             return serviceCollection;
         }
