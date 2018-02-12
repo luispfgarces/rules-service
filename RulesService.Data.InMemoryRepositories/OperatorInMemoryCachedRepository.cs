@@ -10,7 +10,7 @@ using RulesService.Domain.Repositories;
 
 namespace RulesService.Data.InMemoryRepositories
 {
-    internal class InMemoryCachedOperatorRepository : IOperatorRepository
+    internal class OperatorInMemoryCachedRepository : IOperatorRepository
     {
         private static readonly Type operatorCodesType = typeof(OperatorCodes);
 
@@ -20,7 +20,7 @@ namespace RulesService.Data.InMemoryRepositories
 
         private bool allOperatorsInitialized;
 
-        public InMemoryCachedOperatorRepository(IOperatorFactory operatorFactory)
+        public OperatorInMemoryCachedRepository(IOperatorFactory operatorFactory)
         {
             this.allOperatorsInitialized = false;
             this.operatorsDictionary = new ConcurrentDictionary<OperatorCodes, Operator>();

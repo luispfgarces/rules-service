@@ -10,7 +10,7 @@ namespace RulesService.Data.InMemoryRepositories
             serviceCollection.AddSingleton<ITenantRepository, TenantInMemoryRepository>();
             serviceCollection.AddSingleton<IConditionTypeRepository, ConditionTypeInMemoryRepository>();
             serviceCollection.AddSingleton<IContentTypeRepository, ContentTypeInMemoryRepository>();
-            serviceCollection.AddSingleton<IOperatorRepository, InMemoryCachedOperatorRepository>();
+            serviceCollection.AddSingleton<IOperatorRepository, OperatorInMemoryCachedRepository>();
 
             return serviceCollection;
         }
