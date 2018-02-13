@@ -1,5 +1,4 @@
 ﻿using System;
-using RulesService.Domain.Model;
 
 namespace RulesService.Domain.Models.Factories
 {

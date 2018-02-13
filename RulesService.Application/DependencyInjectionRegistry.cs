@@ -12,6 +12,7 @@ namespace RulesService.Application
             serviceCollection.AddScoped<IDataTypeService, DataTypeService>();
             serviceCollection.AddScoped<IContentTypeService, ContentTypeService>();
             serviceCollection.AddScoped<IOperatorService, OperatorService>();
+            serviceCollection.AddScoped<IRuleService, RuleService>();
 
             return serviceCollection;
         }

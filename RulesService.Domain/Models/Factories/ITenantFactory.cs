@@ -1,6 +1,4 @@
-﻿using RulesService.Domain.Model;
-
-namespace RulesService.Domain.Models.Factories
+﻿namespace RulesService.Domain.Models.Factories
 {
     public interface ITenantFactory
     {

@@ -40,7 +40,10 @@ namespace RulesService.Presentation.Api
                 .AddInMemoryRepositories()
                 .AddApplication();
 
-            services.AddMvc();
+            services.AddMvc(mvcOptions =>
+            {
+                //mvcOptions.Filters.Add<JsonParameterActionFilterAttribute>();
+            });
 
             services.AddSwaggerGen(sgo =>
             {

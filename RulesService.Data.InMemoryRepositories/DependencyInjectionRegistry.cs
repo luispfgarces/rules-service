@@ -11,6 +11,7 @@ namespace RulesService.Data.InMemoryRepositories
             serviceCollection.AddSingleton<IConditionTypeRepository, ConditionTypeInMemoryRepository>();
             serviceCollection.AddSingleton<IContentTypeRepository, ContentTypeInMemoryRepository>();
             serviceCollection.AddSingleton<IOperatorRepository, OperatorInMemoryCachedRepository>();
+            serviceCollection.AddSingleton<IRuleRepository, RuleInMemoryRepository>();
 
             return serviceCollection;
         }
