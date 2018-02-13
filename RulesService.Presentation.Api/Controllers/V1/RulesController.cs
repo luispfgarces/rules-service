@@ -23,7 +23,14 @@ namespace RulesService.Presentation.Api.Controllers.V1
         [ProducesResponseType(400)]
         public async Task<IActionResult> Add([FromRoute] Guid tenantId, [FromBody] CreateRuleDto createRuleDto)
         {
-            throw new NotImplementedException();
+            CreateRuleResultDto createRuleResultDto = await this.ruleService.Add(tenantId, createRuleDto);
+
+            if (createRuleResultDto.CreatedRule != null)
+            {
+                return this.Ok(createRuleResultDto.CreatedRule);
+            }
+
+            return this.BadRequest(createRuleResultDto.ErrorMessages);
         }
 
         [HttpGet]

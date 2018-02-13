@@ -25,8 +25,8 @@ namespace RulesService.Data.InMemoryRepositories
                 {
                     ChildNodes = new IConditionNode[]
                     {
-                        new DecimalConditionNode(OperatorCodes.Equal, 23.0m),
-                        new IntegerConditionNode(OperatorCodes.GreaterThan, 15)
+                        new DecimalConditionNode(1, OperatorCodes.Equal, 23.0m),
+                        new IntegerConditionNode(1, OperatorCodes.GreaterThan, 15)
                     }
                 }
             });

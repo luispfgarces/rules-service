@@ -2,8 +2,8 @@
 {
     public class IntegerConditionNode : ValueConditionNodeBase<int>
     {
-        public IntegerConditionNode(OperatorCodes operatorCode, int rightHandOperand)
-            : base(operatorCode, rightHandOperand)
+        public IntegerConditionNode(int conditionTypeCode, OperatorCodes operatorCode, int rightHandOperand)
+            : base(conditionTypeCode, operatorCode, rightHandOperand)
         {
         }
 

@@ -2,7 +2,7 @@
 
 namespace RulesService.Domain.Models.ConditionNodes
 {
-    public class ComposedConditionNode : IConditionNode
+    public class ComposedConditionNode : IComposedConditionNode
     {
         private readonly LogicalOperatorCodes logicalOperatorCode;
 

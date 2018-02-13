@@ -2,8 +2,8 @@
 {
     public class StringConditionNode : ValueConditionNodeBase<string>
     {
-        public StringConditionNode(OperatorCodes operatorCode, string rightHandOperand)
-            : base(operatorCode, rightHandOperand)
+        public StringConditionNode(int conditionTypeCode, OperatorCodes operatorCode, string rightHandOperand)
+            : base(conditionTypeCode, operatorCode, rightHandOperand)
         {
         }
 

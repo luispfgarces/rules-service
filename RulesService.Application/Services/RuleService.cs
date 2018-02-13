@@ -2,21 +2,45 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RulesService.Application.ConversionProfiles;
 using RulesService.Application.Dto.Common;
 using RulesService.Application.Dto.Rules;
 using RulesService.Domain.Models;
 using RulesService.Domain.Models.ConditionNodes;
 using RulesService.Domain.Repositories;
+using RulesService.Domain.Services.Rules;
 
 namespace RulesService.Application.Services
 {
     internal class RuleService : IRuleService
     {
+        private readonly ICreateRuleConversionProfile createRuleConversionProfile;
+
+        private readonly ICreateRuleService createRuleService;
+
         private readonly IRuleRepository ruleRepository;
 
-        public RuleService(IRuleRepository ruleRepository)
+        public RuleService(
+            ICreateRuleConversionProfile createRuleConversionProfile,
+            ICreateRuleService createRuleService,
+            IRuleRepository ruleRepository)
         {
+            this.createRuleConversionProfile = createRuleConversionProfile;
+            this.createRuleService = createRuleService;
             this.ruleRepository = ruleRepository;
+        }
+
+        public async Task<CreateRuleResultDto> Add(Guid tenantId, CreateRuleDto createRuleDto)
+        {
+            CreateRuleArgs createRuleArgs = this.createRuleConversionProfile.Convert(tenantId, createRuleDto);
+
+            CreateRuleResult createRuleResult = await this.createRuleService.CreateRule(createRuleArgs);
+
+            return new CreateRuleResultDto
+            {
+                CreatedRule = createRuleResult.CreatedRule != null ? this.ConvertToDto(createRuleResult.CreatedRule) : null,
+                ErrorMessages = createRuleResult.ErrorMessages.Select(m => new { m.Code, m.Message })
+            };
         }
 
         public async Task<IEnumerable<RuleDto>> GetAll(Guid tenantId, RulesFilterDto rulesFilterDto, PaginationDto paginationDto)

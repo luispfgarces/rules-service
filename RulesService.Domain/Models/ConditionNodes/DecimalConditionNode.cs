@@ -2,8 +2,8 @@
 {
     public class DecimalConditionNode : ValueConditionNodeBase<decimal>
     {
-        public DecimalConditionNode(OperatorCodes operatorCode, decimal rightHandOperand)
-            : base(operatorCode, rightHandOperand)
+        public DecimalConditionNode(int conditionTypeCode, OperatorCodes operatorCode, decimal rightHandOperand)
+            : base(conditionTypeCode, operatorCode, rightHandOperand)
         {
         }
 

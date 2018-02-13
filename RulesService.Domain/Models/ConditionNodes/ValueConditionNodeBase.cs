@@ -2,13 +2,14 @@
 {
     public abstract class ValueConditionNodeBase<T> : IValueConditionNode
     {
-        protected ValueConditionNodeBase(OperatorCodes operatorCode, T rightHandOperand)
+        protected ValueConditionNodeBase(int conditionTypeCode, OperatorCodes operatorCode, T rightHandOperand)
         {
+            this.ConditionTypeCode = conditionTypeCode;
             this.OperatorCode = operatorCode;
             this.RightHandOperand = rightHandOperand;
         }
 
-        public int ConditionTypeCode { get; set; }
+        public int ConditionTypeCode { get; private set; }
 
         public abstract DataTypeCodes DataTypeCode { get; }
 
