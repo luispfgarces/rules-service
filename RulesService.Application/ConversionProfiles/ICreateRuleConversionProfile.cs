@@ -6,6 +6,6 @@ namespace RulesService.Application.ConversionProfiles
 {
     internal interface ICreateRuleConversionProfile
     {
-        CreateRuleArgs Convert(Guid tenantId, CreateRuleDto createRuleDto);
+        CreateRule Convert(Guid tenantId, CreateRuleDto createRuleDto);
     }
 }

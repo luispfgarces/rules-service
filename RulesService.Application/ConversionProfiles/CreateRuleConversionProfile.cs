@@ -13,9 +13,9 @@ namespace RulesService.Application.ConversionProfiles
             this.conditionNodeConversionProfile = conditionNodeConversionProfile;
         }
 
-        public CreateRuleArgs Convert(Guid tenantId, CreateRuleDto createRuleDto)
+        public CreateRule Convert(Guid tenantId, CreateRuleDto createRuleDto)
         {
-            return new CreateRuleArgs
+            return new CreateRule
             {
                 ContentTypeCode = createRuleDto.ContentTypeCode,
                 DateBegin = createRuleDto.DateBegin,

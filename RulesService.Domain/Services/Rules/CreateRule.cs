@@ -2,7 +2,7 @@
 
 namespace RulesService.Domain.Services.Rules
 {
-    public class CreateRuleArgs
+    public class CreateRule
     {
         public int ContentTypeCode { get; set; }
 

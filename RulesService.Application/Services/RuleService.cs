@@ -32,7 +32,7 @@ namespace RulesService.Application.Services
 
         public async Task<CreateRuleResultDto> Add(Guid tenantId, CreateRuleDto createRuleDto)
         {
-            CreateRuleArgs createRuleArgs = this.createRuleConversionProfile.Convert(tenantId, createRuleDto);
+            CreateRule createRuleArgs = this.createRuleConversionProfile.Convert(tenantId, createRuleDto);
 
             CreateRuleResult createRuleResult = await this.createRuleService.CreateRule(createRuleArgs);
 
@@ -108,7 +108,7 @@ namespace RulesService.Application.Services
             Id = rule.Key.Id,
             Name = rule.Name,
             Priority = rule.Priority,
-            RootCondition = this.ConvertNodeToDto(rule.RootCondition),
+            RootCondition = rule.RootCondition != null ? this.ConvertNodeToDto(rule.RootCondition) : null,
             TenantId = rule.Key.TenantId
         };
     }

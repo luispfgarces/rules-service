@@ -6,6 +6,7 @@ using RulesService.Domain.Models;
 using RulesService.Domain.Models.ConditionNodes;
 using RulesService.Domain.Models.Factories;
 using RulesService.Domain.Repositories;
+using RulesService.Domain.Services.Rules.Validation;
 
 namespace RulesService.Domain.Services.Rules
 {
@@ -14,11 +15,13 @@ namespace RulesService.Domain.Services.Rules
         private readonly IConditionNodeAbstractFactory conditionNodeAbstractFactory;
         private readonly IConditionTypeRepository conditionTypeRepository;
         private readonly IContentTypeRepository contentTypeRepository;
+        private readonly ICreateRuleValidator createRuleValidator;
         private readonly IRuleFactory ruleFactory;
         private readonly IRuleRepository ruleRepository;
         private readonly ITenantRepository tenantRepository;
 
         public CreateRuleService(
+            ICreateRuleValidator createRuleValidator,
             IConditionNodeAbstractFactory conditionNodeAbstractFactory,
             IConditionTypeRepository conditionTypeRepository,
             IContentTypeRepository contentTypeRepository,
@@ -26,6 +29,7 @@ namespace RulesService.Domain.Services.Rules
             IRuleRepository ruleRepository,
             ITenantRepository tenantRepository)
         {
+            this.createRuleValidator = createRuleValidator;
             this.conditionNodeAbstractFactory = conditionNodeAbstractFactory;
             this.conditionTypeRepository = conditionTypeRepository;
             this.contentTypeRepository = contentTypeRepository;
@@ -34,59 +38,40 @@ namespace RulesService.Domain.Services.Rules
             this.tenantRepository = tenantRepository;
         }
 
-        public async Task<CreateRuleResult> CreateRule(CreateRuleArgs createRuleArgs)
+        public async Task<CreateRuleResult> CreateRule(CreateRule createRule)
         {
             CreateRuleResult createRuleResult = new CreateRuleResult();
 
-            // Validate rule name.
-            if (string.IsNullOrWhiteSpace(createRuleArgs.Name))
+            IEnumerable<CreateRuleValidationMessage> createRuleValidationMessages = this.createRuleValidator.Validate(createRule);
+
+            foreach (CreateRuleValidationMessage validationMessage in createRuleValidationMessages)
             {
-                createRuleResult.AddErrorMessage("RXXX", "Specified rule name is null or empty. Must input a valid rule name.");
-            }
-
-            // Validate rule interval.
-            if (createRuleArgs.DateEnd.HasValue && createRuleArgs.DateEnd.GetValueOrDefault() <= createRuleArgs.DateBegin)
-            {
-                createRuleResult.AddErrorMessage("RXXX", $"Specified rule dates interval is invalid. (DateBegin = {createRuleArgs.DateBegin} | DateEnd = {createRuleArgs.DateEnd.GetValueOrDefault()})");
-            }
-
-            // Validate rule priority.
-            if (createRuleArgs.Priority <= 0)
-            {
-                createRuleResult.AddErrorMessage("RXXX", $"Specified rule priority is invalid. (Priority = {createRuleArgs.Priority})");
-            }
-
-            // Fetch tenant. No need to validate, tenant should be validated at this point.
-            Tenant tenant = await this.tenantRepository.GetById(createRuleArgs.TenantId);
-
-            // Fetch content type and validate.
-            ContentTypeKey contentTypeKey = ContentTypeKey.New(createRuleArgs.TenantId, createRuleArgs.ContentTypeCode);
-            ContentType contentType = await this.contentTypeRepository.GetById(contentTypeKey);
-
-            if (contentType == null)
-            {
-                createRuleResult.AddErrorMessage("RXXX", $"Specified content type does not exist. (TenantId = {createRuleArgs.TenantId} | ContentTypeCode = {createRuleArgs.ContentTypeCode})");
-            }
-
-            IConditionNode rootCondition = null;
-            if (createRuleArgs.RootCondition != null)
-            {
-                rootCondition = await this.CreateConditionNodeRecursive(createRuleArgs.TenantId, createRuleArgs.RootCondition, createRuleResult);
+                createRuleResult.AddErrorMessage(validationMessage.Code, validationMessage.Message);
             }
 
             if (!createRuleResult.HasErrors)
             {
+                // Fetch content type and validate.
+                ContentTypeKey contentTypeKey = ContentTypeKey.New(createRule.TenantId, createRule.ContentTypeCode);
+                ContentType contentType = await this.contentTypeRepository.GetById(contentTypeKey);
+
+                IConditionNode rootCondition = null;
+                if (createRule.RootCondition != null)
+                {
+                    rootCondition = await this.CreateConditionNodeRecursive(createRule.TenantId, createRule.RootCondition, createRuleResult);
+                }
+
                 Rule rule = this.ruleFactory.CreateRule(
-                        createRuleArgs.TenantId,
-                        createRuleArgs.Name,
+                        createRule.TenantId,
+                        createRule.Name,
                         contentType,
-                        createRuleArgs.DateBegin,
-                        createRuleArgs.DateEnd,
-                        createRuleArgs.Priority,
+                        createRule.DateBegin,
+                        createRule.DateEnd,
+                        createRule.Priority,
                         rootCondition);
 
                 IEnumerable<Rule> existentRules = await this.ruleRepository.GetAll(
-                    createRuleArgs.TenantId,
+                    createRule.TenantId,
                     new RulesFilter
                     {
                         ContentTypeCode = contentType.Key.Code
@@ -94,7 +79,7 @@ namespace RulesService.Domain.Services.Rules
                     null);
 
                 // Move rules w/ priority >= to new rule's priority 1 value forward.
-                foreach (Rule existentRule in existentRules.Where(r => r.Priority >= createRuleArgs.Priority))
+                foreach (Rule existentRule in existentRules.Where(r => r.Priority >= createRule.Priority))
                 {
                     existentRule.Priority++;
                     await this.ruleRepository.Update(existentRule);
@@ -115,17 +100,6 @@ namespace RulesService.Domain.Services.Rules
                 case CreateComposedConditionNode cccn:
                     LogicalOperatorCodes logicalOperatorCode = (LogicalOperatorCodes)cccn.LogicalOperatorCode;
 
-                    if (logicalOperatorCode != LogicalOperatorCodes.And && logicalOperatorCode != LogicalOperatorCodes.Or)
-                    {
-                        createRuleResult
-                            .AddErrorMessage("RXXX", $"Specified invalid logical operator code for condition node. (LogicalOperator = {logicalOperatorCode.ToString()})");
-                    }
-
-                    if (!cccn.ChildNodes.Any())
-                    {
-                        createRuleResult.AddErrorMessage("RXXX", "Specified empty collection of child nodes for condition node. Must have one child node at least.");
-                    }
-
                     List<IConditionNode> conditionNodes = new List<IConditionNode>();
                     foreach (CreateConditionNodeBase ccnb in cccn.ChildNodes)
                     {
@@ -138,53 +112,13 @@ namespace RulesService.Domain.Services.Rules
                 case CreateValueConditionNode cvcn:
                     ConditionTypeKey conditionTypeKey = ConditionTypeKey.New(tenantId, cvcn.ConditionTypeCode);
                     ConditionType conditionType = await this.conditionTypeRepository.GetById(conditionTypeKey);
-
-                    if (conditionType == null)
-                    {
-                        createRuleResult.AddErrorMessage("RXXX", $"Specified invalid condition type for condition node. (TenantId = {tenantId} | ConditionTypeCode = {cvcn.ConditionTypeCode})");
-                    }
-
                     DataTypeCodes dataTypeCode = (DataTypeCodes)cvcn.DataTypeCode;
-                    if (!Enum.IsDefined(typeof(DataTypeCodes), dataTypeCode))
-                    {
-                        createRuleResult.AddErrorMessage("RXXX", $"Specified invalid data type for condition node. (DataTypeCode = {cvcn.DataTypeCode})");
-                    }
-
                     OperatorCodes operatorCode = (OperatorCodes)cvcn.OperatorCode;
-                    if (!Enum.IsDefined(typeof(OperatorCodes), operatorCode))
-                    {
-                        createRuleResult.AddErrorMessage("RXXX", $"Specified invalid operator for condition node. (OperatorCode = {cvcn.OperatorCode})");
-                    }
-
-                    if (Enum.IsDefined(typeof(DataTypeCodes), dataTypeCode) && !this.IsValidDataTypeValue(dataTypeCode, cvcn.RightHandOperand))
-                    {
-                        createRuleResult
-                            .AddErrorMessage("RXXX", $"Specified invalid right hand operand value for specified data type. (DataType = {dataTypeCode.ToString()} | Value = {cvcn?.ToString()})");
-                    }
 
                     return this.conditionNodeAbstractFactory.CreateValueConditionNode(conditionType, dataTypeCode, operatorCode, cvcn.RightHandOperand);
 
                 default:
                     throw new NotSupportedException("Unsupported condition node creation.");
-            }
-        }
-
-        private bool IsValidDataTypeValue(DataTypeCodes dataTypeCode, object value)
-        {
-            string valueStringRepresentation = value?.ToString() ?? string.Empty;
-            switch (dataTypeCode)
-            {
-                case DataTypeCodes.Integer:
-                    return Int32.TryParse(valueStringRepresentation, out int integer);
-
-                case DataTypeCodes.Decimal:
-                    return Decimal.TryParse(valueStringRepresentation, out decimal @decimal);
-
-                case DataTypeCodes.String:
-                    return value != null;
-
-                default:
-                    throw new NotSupportedException("Unsupported data type.");
             }
         }
     }
