@@ -22,6 +22,9 @@ namespace RulesService.Domain
             serviceCollection.AddTransient<ICreateRuleService, CreateRuleService>();
             serviceCollection.AddSingleton<ICreateRuleInvariantFactory, CreateRuleInvariantFactory>();
             serviceCollection.AddTransient<ICreateRuleValidator, CreateRuleValidator>();
+            serviceCollection.AddTransient<IUpdateRuleService, UpdateRuleService>();
+            serviceCollection.AddSingleton<IUpdateRuleInvariantFactory, UpdateRuleInvariantFactory>();
+            serviceCollection.AddTransient<IUpdateRuleValidator, UpdateRuleValidator>();
             serviceCollection.AddInvariants();
 
             return serviceCollection;
@@ -39,6 +42,8 @@ namespace RulesService.Domain
             serviceCollection.AddTransient<PriorityCreateRuleInvariant>();
             serviceCollection.AddTransient<ValidLogicalOperatorForComposedConditionNodeCreateRuleInvariant>();
             serviceCollection.AddTransient<ValidValueForValueConditionNodeCreateRuleInvariant>();
+            serviceCollection.AddTransient<DateIntervalUpdateRuleInvariant>();
+            serviceCollection.AddTransient<PriorityUpdateRuleInvariant>();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace RulesService.Domain.Services.Rules.Validation.Invariants
             this.serviceProvider = serviceProvider;
         }
 
-        public ICreateRuleInvariant GetCreateRuleInvariant(Type invariantType)
+        public IInvariant<CreateRule> GetRuleInvariant(Type invariantType)
         {
             if (!CreateRuleInvariantFactory.createRuleInvariantInterfaceType.IsAssignableFrom(invariantType))
             {

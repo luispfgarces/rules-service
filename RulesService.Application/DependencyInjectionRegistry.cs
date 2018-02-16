@@ -17,6 +17,7 @@ namespace RulesService.Application
 
             serviceCollection.AddScoped<ICreateRuleConversionProfile, CreateRuleConversionProfile>();
             serviceCollection.AddScoped<IConditionNodeConversionProfile, ConditionNodeConversionProfile>();
+            serviceCollection.AddScoped<IUpdateRuleConversionProfile, UpdateRuleConversionProfile>();
 
             return serviceCollection;
         }

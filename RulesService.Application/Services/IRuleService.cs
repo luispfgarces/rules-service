@@ -8,10 +8,12 @@ namespace RulesService.Application.Services
 {
     public interface IRuleService
     {
-        Task<CreateRuleResultDto> Add(Guid tenantId, CreateRuleDto createRuleDto);
+        Task<RuleResultDto> Add(Guid tenantId, CreateRuleDto createRuleDto);
 
         Task<IEnumerable<RuleDto>> GetAll(Guid tenantId, RulesFilterDto rulesFilterDto, PaginationDto paginationDto);
 
         Task<RuleDto> GetBy(Guid tenantId, Guid id);
+
+        Task<RuleResultDto> Update(Guid tenantId, Guid id, UpdateRuleDto updateRuleDto);
     }
 }

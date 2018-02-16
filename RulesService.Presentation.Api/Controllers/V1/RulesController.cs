@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RulesService.Application.Dto.Common;
 using RulesService.Application.Dto.Rules;
+using RulesService.Application.Exceptions;
 using RulesService.Application.Services;
 
 namespace RulesService.Presentation.Api.Controllers.V1
@@ -23,11 +24,11 @@ namespace RulesService.Presentation.Api.Controllers.V1
         [ProducesResponseType(400)]
         public async Task<IActionResult> Add([FromRoute] Guid tenantId, [FromBody] CreateRuleDto createRuleDto)
         {
-            CreateRuleResultDto createRuleResultDto = await this.ruleService.Add(tenantId, createRuleDto);
+            RuleResultDto createRuleResultDto = await this.ruleService.Add(tenantId, createRuleDto);
 
-            if (createRuleResultDto.CreatedRule != null)
+            if (createRuleResultDto.AffectedRule != null)
             {
-                return this.Ok(createRuleResultDto.CreatedRule);
+                return this.Ok(createRuleResultDto.AffectedRule);
             }
 
             return this.BadRequest(createRuleResultDto.ErrorMessages);
@@ -90,7 +91,21 @@ namespace RulesService.Presentation.Api.Controllers.V1
         [ProducesResponseType(400)]
         public async Task<IActionResult> Update([FromRoute] Guid tenantId, [FromRoute] Guid id, [FromBody] UpdateRuleDto updateRuleDto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                RuleResultDto ruleResultDto = await this.ruleService.Update(tenantId, id, updateRuleDto);
+
+                if (ruleResultDto.AffectedRule != null)
+                {
+                    return this.Ok(ruleResultDto.AffectedRule);
+                }
+
+                return this.BadRequest(ruleResultDto.ErrorMessages);
+            }
+            catch (NotFoundException)
+            {
+                return this.NotFound("A rule w/ the given tenant id and id was not found");
+            }
         }
     }
 }

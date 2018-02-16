@@ -4,6 +4,6 @@ namespace RulesService.Domain.Services.Rules
 {
     public interface ICreateRuleService
     {
-        Task<CreateRuleResult> CreateRule(CreateRule createRule);
+        Task<RuleResult> CreateRule(CreateRule createRule);
     }
 }

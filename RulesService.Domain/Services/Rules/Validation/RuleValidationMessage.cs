@@ -1,6 +1,6 @@
 ﻿namespace RulesService.Domain.Services.Rules.Validation
 {
-    internal class CreateRuleValidationMessage
+    internal class RuleValidationMessage
     {
         public string Code { get; set; }
 

@@ -2,9 +2,9 @@
 
 namespace RulesService.Application.Dto.Rules
 {
-    public class CreateRuleResultDto
+    public class RuleResultDto
     {
-        public RuleDto CreatedRule { get; set; }
+        public RuleDto AffectedRule { get; set; }
 
         public IEnumerable<object> ErrorMessages { get; set; }
     }

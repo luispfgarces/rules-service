@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using RulesService.Application.ConversionProfiles;
 using RulesService.Application.Dto.Common;
 using RulesService.Application.Dto.Rules;
+using RulesService.Application.Exceptions;
 using RulesService.Domain.Models;
 using RulesService.Domain.Models.ConditionNodes;
 using RulesService.Domain.Repositories;
@@ -20,26 +21,34 @@ namespace RulesService.Application.Services
 
         private readonly IRuleRepository ruleRepository;
 
+        private readonly IUpdateRuleConversionProfile updateRuleConversionProfile;
+
+        private readonly IUpdateRuleService updateRuleService;
+
         public RuleService(
             ICreateRuleConversionProfile createRuleConversionProfile,
             ICreateRuleService createRuleService,
-            IRuleRepository ruleRepository)
+            IRuleRepository ruleRepository,
+            IUpdateRuleConversionProfile updateRuleConversionProfile,
+            IUpdateRuleService updateRuleService)
         {
             this.createRuleConversionProfile = createRuleConversionProfile;
             this.createRuleService = createRuleService;
             this.ruleRepository = ruleRepository;
+            this.updateRuleConversionProfile = updateRuleConversionProfile;
+            this.updateRuleService = updateRuleService;
         }
 
-        public async Task<CreateRuleResultDto> Add(Guid tenantId, CreateRuleDto createRuleDto)
+        public async Task<RuleResultDto> Add(Guid tenantId, CreateRuleDto createRuleDto)
         {
-            CreateRule createRuleArgs = this.createRuleConversionProfile.Convert(tenantId, createRuleDto);
+            CreateRule createRule = this.createRuleConversionProfile.Convert(tenantId, createRuleDto);
 
-            CreateRuleResult createRuleResult = await this.createRuleService.CreateRule(createRuleArgs);
+            RuleResult ruleResult = await this.createRuleService.CreateRule(createRule);
 
-            return new CreateRuleResultDto
+            return new RuleResultDto
             {
-                CreatedRule = createRuleResult.CreatedRule != null ? this.ConvertToDto(createRuleResult.CreatedRule) : null,
-                ErrorMessages = createRuleResult.ErrorMessages.Select(m => new { m.Code, m.Message })
+                AffectedRule = ruleResult.AffectedRule != null ? this.ConvertToDto(ruleResult.AffectedRule) : null,
+                ErrorMessages = ruleResult.ErrorMessages.Select(m => new { m.Code, m.Message })
             };
         }
 
@@ -72,6 +81,27 @@ namespace RulesService.Application.Services
 
                     return null;
                 });
+        }
+
+        public async Task<RuleResultDto> Update(Guid tenantId, Guid id, UpdateRuleDto updateRuleDto)
+        {
+            RuleKey ruleKey = RuleKey.New(tenantId, id);
+            Rule rule = await this.ruleRepository.GetById(ruleKey);
+
+            if (rule == null)
+            {
+                throw new NotFoundException(FormattableString.Invariant($"{nameof(Rule)} was not found. TenantId = {tenantId} | Id = {id}"));
+            }
+
+            UpdateRule updateRule = this.updateRuleConversionProfile.Convert(tenantId, id, updateRuleDto);
+
+            RuleResult ruleResult = await this.updateRuleService.UpdateRule(updateRule);
+
+            return new RuleResultDto
+            {
+                AffectedRule = ruleResult.AffectedRule != null ? this.ConvertToDto(ruleResult.AffectedRule) : null,
+                ErrorMessages = ruleResult.ErrorMessages.Select(m => new { m.Code, m.Message })
+            };
         }
 
         private ConditionNodeBaseDto ConvertNodeToDto(IConditionNode conditionNode)

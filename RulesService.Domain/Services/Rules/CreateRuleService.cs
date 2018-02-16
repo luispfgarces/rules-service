@@ -38,18 +38,18 @@ namespace RulesService.Domain.Services.Rules
             this.tenantRepository = tenantRepository;
         }
 
-        public async Task<CreateRuleResult> CreateRule(CreateRule createRule)
+        public async Task<RuleResult> CreateRule(CreateRule createRule)
         {
-            CreateRuleResult createRuleResult = new CreateRuleResult();
+            RuleResult ruleResult = new RuleResult();
 
-            IEnumerable<CreateRuleValidationMessage> createRuleValidationMessages = this.createRuleValidator.Validate(createRule);
+            IEnumerable<RuleValidationMessage> ruleValidationMessages = this.createRuleValidator.Validate(createRule);
 
-            foreach (CreateRuleValidationMessage validationMessage in createRuleValidationMessages)
+            foreach (RuleValidationMessage validationMessage in ruleValidationMessages)
             {
-                createRuleResult.AddErrorMessage(validationMessage.Code, validationMessage.Message);
+                ruleResult.AddErrorMessage(validationMessage.Code, validationMessage.Message);
             }
 
-            if (!createRuleResult.HasErrors)
+            if (!ruleResult.HasErrors)
             {
                 // Fetch content type and validate.
                 ContentTypeKey contentTypeKey = ContentTypeKey.New(createRule.TenantId, createRule.ContentTypeCode);
@@ -58,7 +58,7 @@ namespace RulesService.Domain.Services.Rules
                 IConditionNode rootCondition = null;
                 if (createRule.RootCondition != null)
                 {
-                    rootCondition = await this.CreateConditionNodeRecursive(createRule.TenantId, createRule.RootCondition, createRuleResult);
+                    rootCondition = await this.CreateConditionNodeRecursive(createRule.TenantId, createRule.RootCondition);
                 }
 
                 Rule rule = this.ruleFactory.CreateRule(
@@ -87,13 +87,13 @@ namespace RulesService.Domain.Services.Rules
 
                 await this.ruleRepository.Add(rule);
 
-                createRuleResult.CreatedRule = rule;
+                ruleResult.AffectedRule = rule;
             }
 
-            return createRuleResult;
+            return ruleResult;
         }
 
-        private async Task<IConditionNode> CreateConditionNodeRecursive(Guid tenantId, CreateConditionNodeBase createConditionNodeBase, CreateRuleResult createRuleResult)
+        private async Task<IConditionNode> CreateConditionNodeRecursive(Guid tenantId, CreateConditionNodeBase createConditionNodeBase)
         {
             switch (createConditionNodeBase)
             {
@@ -103,7 +103,7 @@ namespace RulesService.Domain.Services.Rules
                     List<IConditionNode> conditionNodes = new List<IConditionNode>();
                     foreach (CreateConditionNodeBase ccnb in cccn.ChildNodes)
                     {
-                        IConditionNode conditionNode = await this.CreateConditionNodeRecursive(tenantId, ccnb, createRuleResult);
+                        IConditionNode conditionNode = await this.CreateConditionNodeRecursive(tenantId, ccnb);
                         conditionNodes.Add(conditionNode);
                     }
 

@@ -1,6 +1,6 @@
 ﻿namespace RulesService.Domain.Services.Rules
 {
-    public class CreateRuleResultMessage
+    public class RuleResultMessage
     {
         public string Code { get; set; }
 

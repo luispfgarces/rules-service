@@ -4,24 +4,24 @@ using RulesService.Domain.Models;
 
 namespace RulesService.Domain.Services.Rules
 {
-    public class CreateRuleResult
+    public class RuleResult
     {
-        private readonly List<CreateRuleResultMessage> errorMessages;
+        private readonly List<RuleResultMessage> errorMessages;
 
-        public CreateRuleResult()
+        public RuleResult()
         {
-            this.errorMessages = new List<CreateRuleResultMessage>(0);
+            this.errorMessages = new List<RuleResultMessage>(0);
         }
 
-        public Rule CreatedRule { get; set; }
+        public Rule AffectedRule { get; set; }
 
-        public IEnumerable<CreateRuleResultMessage> ErrorMessages => this.errorMessages.AsReadOnly();
+        public IEnumerable<RuleResultMessage> ErrorMessages => this.errorMessages.AsReadOnly();
 
         internal bool HasErrors => this.errorMessages.Any();
 
         public void AddErrorMessage(string code, string message)
         {
-            CreateRuleResultMessage createRuleResultMessage = new CreateRuleResultMessage
+            RuleResultMessage createRuleResultMessage = new RuleResultMessage
             {
                 Code = code,
                 Message = message
