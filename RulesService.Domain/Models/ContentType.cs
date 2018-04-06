@@ -15,6 +15,10 @@ namespace RulesService.Domain.Models
             this.Name = name;
         }
 
+        private ContentType()
+        {
+        }
+
         public ContentTypeKey Key { get; private set; }
 
         public string Name { get; set; }

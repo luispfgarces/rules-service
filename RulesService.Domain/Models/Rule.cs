@@ -12,6 +12,10 @@ namespace RulesService.Domain.Models
             this.Key = RuleKey.New(tenantId, Guid.NewGuid());
         }
 
+        private Rule()
+        {
+        }
+
         public ContentType ContentType { get; set; }
 
         public DateTime DateBegin { get; set; }

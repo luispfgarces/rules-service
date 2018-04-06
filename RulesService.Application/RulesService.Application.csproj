@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RulesService.CrossCutting\RulesService.CrossCutting.csproj" />
     <ProjectReference Include="..\RulesService.Domain\RulesService.Domain.csproj" />
+    <ProjectReference Include="..\RulesService.Infrastructure\RulesService.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -15,6 +15,10 @@ namespace RulesService.Domain.Models
             };
         }
 
+        private ConditionType()
+        {
+        }
+
         public DataTypeCodes DataTypeCode { get; private set; }
 
         public string Description { get; set; }
