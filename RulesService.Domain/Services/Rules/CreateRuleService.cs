@@ -61,14 +61,19 @@ namespace RulesService.Domain.Services.Rules
                     rootCondition = await this.CreateConditionNodeRecursive(createRule.TenantId, createRule.RootCondition);
                 }
 
-                Rule rule = this.ruleFactory.CreateRule(
-                        createRule.TenantId,
-                        createRule.Name,
-                        contentType,
-                        createRule.DateBegin,
-                        createRule.DateEnd,
-                        createRule.Priority,
-                        rootCondition);
+                CreateRuleArgs createRuleArgs = new CreateRuleArgs
+                {
+                    Content = createRule.Content,
+                    ContentType = contentType,
+                    DateBegin = createRule.DateBegin,
+                    DateEnd = createRule.DateEnd,
+                    Name = createRule.Name,
+                    Priority = createRule.Priority,
+                    RootCondition = rootCondition,
+                    TenantId = createRule.TenantId
+                };
+
+                Rule rule = this.ruleFactory.CreateRule(createRuleArgs);
 
                 IEnumerable<Rule> existentRules = await this.ruleRepository.GetAll(
                     createRule.TenantId,

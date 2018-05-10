@@ -17,7 +17,7 @@ namespace RulesService.Data.InMemoryRepositories
             this.contentTypeRepository = contentTypeRepository;
             this.entities.Add(new Rule(Guid.Parse("d29c8e8b-0e46-4993-9c77-25e48bdd6691"))
             {
-                ContentType = this.contentTypeRepository.GetById(ContentTypeKey.New(Guid.Parse("d29c8e8b-0e46-4993-9c77-25e48bdd6691"), 1)).GetAwaiter().GetResult(),
+                ContentTypeCode = 1,
                 DateBegin = new DateTime(2017, 01, 01),
                 Name = "Sample rule",
                 Priority = 1,
@@ -40,7 +40,7 @@ namespace RulesService.Data.InMemoryRepositories
             {
                 if (rulesFilter.ContentTypeCode.HasValue)
                 {
-                    filteredRules = filteredRules.Where(r => r.ContentType.Key.Code == rulesFilter.ContentTypeCode.GetValueOrDefault());
+                    filteredRules = filteredRules.Where(r => r.ContentTypeCode == rulesFilter.ContentTypeCode.GetValueOrDefault());
                 }
 
                 if (rulesFilter.FilterDateBegin.HasValue && rulesFilter.FilterDateEnd.HasValue)

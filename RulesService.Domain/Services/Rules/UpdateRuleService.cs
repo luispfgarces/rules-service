@@ -60,7 +60,7 @@ namespace RulesService.Domain.Services.Rules
                         updateRule.TenantId,
                         new RulesFilter
                         {
-                            ContentTypeCode = rule.ContentType.Key.Code
+                            ContentTypeCode = rule.ContentTypeCode
                         },
                         null);
 

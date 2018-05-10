@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using RulesService.Domain.Models.Factories;
+using RulesService.Domain.Repositories;
 using RulesService.Domain.Services.Rules;
 using RulesService.Domain.Services.Rules.Validation;
 using RulesService.Domain.Services.Rules.Validation.Invariants;
 
-namespace RulesService.Domain
+namespace RulesService
 {
     public static class DependencyInjectionRegistry
     {
@@ -26,6 +28,17 @@ namespace RulesService.Domain
             serviceCollection.AddSingleton<IUpdateRuleInvariantFactory, UpdateRuleInvariantFactory>();
             serviceCollection.AddTransient<IUpdateRuleValidator, UpdateRuleValidator>();
             serviceCollection.AddInvariants();
+
+            return serviceCollection;
+        }
+
+        public static IServiceCollection AddRepositories(
+            this IServiceCollection serviceCollection,
+            Action<RepositoriesDependencyConfiguration> repositoriesDependencyConfigurationAction)
+        {
+            RepositoriesDependencyConfiguration repositoriesDependencyConfiguration = new RepositoriesDependencyConfiguration(serviceCollection);
+
+            repositoriesDependencyConfigurationAction.Invoke(repositoriesDependencyConfiguration);
 
             return serviceCollection;
         }

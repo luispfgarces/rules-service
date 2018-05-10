@@ -2,9 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RulesService.Application;
-using RulesService.Data.InMemoryRepositories;
-using RulesService.Domain;
 
 namespace RulesService.Presentation.Api
 {
@@ -37,7 +34,6 @@ namespace RulesService.Presentation.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDomain()
-                .AddInMemoryRepositories()
                 .AddApplication();
 
             services.AddMvc(mvcOptions =>

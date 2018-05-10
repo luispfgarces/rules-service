@@ -2,7 +2,7 @@
 
 namespace RulesService.Domain.Core
 {
-    public struct AuditMetadata
+    public class AuditMetadata
     {
         public AuditMetadata(DateTime now)
         {

@@ -132,7 +132,7 @@ namespace RulesService.Application.Services
 
         private RuleDto ConvertToDto(Rule rule) => new RuleDto
         {
-            ContentTypeCode = rule.ContentType.Key.Code,
+            ContentTypeCode = rule.ContentTypeCode,
             DateBegin = rule.DateBegin,
             DateEnd = rule.DateEnd,
             Id = rule.Key.Id,

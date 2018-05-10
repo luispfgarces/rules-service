@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace RulesService.Domain.Services.Rules
+namespace RulesService.Domain.Models.Factories
 {
-    public class CreateRule
+    public struct CreateRuleArgs
     {
         public string Content { get; set; }
 
-        public int ContentTypeCode { get; set; }
+        public ContentType ContentType { get; set; }
 
         public DateTime DateBegin { get; set; }
 
@@ -16,7 +16,7 @@ namespace RulesService.Domain.Services.Rules
 
         public int Priority { get; set; }
 
-        public CreateConditionNodeBase RootCondition { get; set; }
+        public IConditionNode RootCondition { get; set; }
 
         public Guid TenantId { get; set; }
     }
