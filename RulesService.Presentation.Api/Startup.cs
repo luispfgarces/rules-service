@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace RulesService.Presentation.Api
+﻿namespace RulesService.Presentation.Api
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -15,14 +16,18 @@ namespace RulesService.Presentation.Api
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseRouting()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
             app.UseSwagger();
             app.UseSwaggerUI(suio =>
             {
@@ -36,14 +41,12 @@ namespace RulesService.Presentation.Api
             services.AddDomain()
                 .AddApplication();
 
-            services.AddMvc(mvcOptions =>
-            {
-                //mvcOptions.Filters.Add<JsonParameterActionFilterAttribute>();
-            });
+            services.AddControllers()
+                .AddNewtonsoftJson();
 
             services.AddSwaggerGen(sgo =>
             {
-                sgo.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
+                sgo.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
                 {
                     Title = "Rules Service V1 API",
                     Version = "v1"
